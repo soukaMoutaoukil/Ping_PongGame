@@ -13,5 +13,12 @@
       
       2- Two Players ( Joueur Contre Joueur )
       
+   Le mouvement des raquettes se fait par la souris
+   
+   Pour la partie deux joueurs j'ai des erreurs que j'avais pas le temps pour les régler :
+   
+       - Le code de winner et Loser sont commentésdans à cause d un beug daffichage mais les données sont bonnes
+       
+      
       
       
