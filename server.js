@@ -26,7 +26,7 @@ var app = express();
 var serv = require('http').Server(app);
 
 app.get('/', function (req, res) {
-	res.sendFile(__dirname + '/multi.html');
+	res.sendFile(__dirname + '/start.html');
 });
 app.use('/', express.static(__dirname + '/'));
 
@@ -36,29 +36,45 @@ var socket = require('socket.io');
 var io = socket(server);
 
 
-function getCounter(){
-	io.sockets.emit('getCounter',connections.length);
-	console.log(connections.length);
+function counterConx(){
+	io.sockets.emit('counterConx',connections.length);
+	console.log(connections.length+" user connected");
 }
 
-setInterval(heartbeat,33);
+setInterval(playerList,33);
 
 
-function heartbeat(){
-	io.sockets.emit('heartbeat',players);
+function playerList(){
+	io.sockets.emit('playerList',players);
 }
 
-setInterval(heartbeatBall,33);
+setInterval(ball,33);
 
 
-function heartbeatBall(){
-	io.sockets.emit('heartbeatBall',b);
+function ball(){
+	io.sockets.emit('ball',b);
 }
 
-
+/*function wi(){
+	for(var i = 0; i < players.length; i++){
+		var id = players[i].id ;
+		if(players[i].points === 10 ||players[i].points === 11 ){
+			msg = "you win";
+			//console.log(msg);
+			//if ()
+		}
+		winner ={
+			id: id,
+			g : msg
+		};
+		console.log(winner);
+		io.sockets.emit('wi', winner);
+		//console.log(winner);
+	}
+}*/
 io.sockets.on('connection',function(socket){
 	connections.push(socket);
-	getCounter();
+	counterConx();
 	socket.on('start',function(data){
 		var p = new Player(socket.id,data.x,data.y,data.w,data.h,data.points);
 		players.push(p);
@@ -73,7 +89,7 @@ io.sockets.on('connection',function(socket){
 		console.log("disconnected");
 	});
 
-	socket.on('update',function(data){
+	socket.on('playerUpdate',function(data){
 		var wich;
 		for(var i = 0; i < players.length; i++){
 			if(socket.id === players[i].id)
@@ -87,7 +103,7 @@ io.sockets.on('connection',function(socket){
 		wich.points = data.points;
 	});
 
-	socket.on('updateBall',function(data){
+	socket.on('ballUpdate',function(data){
 		if (data !== undefined){
 
 			b.x = data.x;

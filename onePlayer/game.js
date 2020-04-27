@@ -7,8 +7,10 @@ var go = false;
 var net;
 var button;
 var canvas;
+var son;
 function setup(){
    createCanvas(600,400);
+  // son = loadSound('"../sounds/hit.mp3"')
 //canvas.position(400,50,'absolute');
     player = new Player();
     ball = new Ball();
@@ -28,6 +30,7 @@ function drawNet() {
 
     for (let i = 0; i <= height; i += 15) {
         rect(net.x, net.y + i, net.width, net.height);
+       // ctx.fillRect(net.x, net.y + i, net.width, net.height)
     }
 
 }
@@ -37,10 +40,13 @@ function draw(){
 
     drawNet();
     textSize(48);
+   // ctx.fill(#5F9EA0);
     fill("#5F9EA0");
 
-    text(player.score, 30, 40);
-    text(com.score, width - 80, 40);
+
+    text(player.score,  width/2 - 100, 50);
+    text(com.score,  width/2 + 100, 50);
+    //ctx.fillText(com.score,  width/2 + 100, 50)
 
     player.show();
     //move the ball
@@ -53,6 +59,7 @@ function draw(){
 
     ball.move();
 
+//inverse ball mouvement
     if(ball.collision(player))
         ball.xv = 5;
     if(ball.collision(com))
@@ -72,11 +79,7 @@ function throwBall(){
         ball = balls.pop();
     else {
         showWinner();
-      /*  var msg = prompt("Do you want to play again ?");
-   if (msg !== null){
-       window.location.reload();
-   }*/
-       // alert("Do you want to play again?");
+
 
     }
 }

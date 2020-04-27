@@ -18,7 +18,7 @@ function setup(){
         height: 10,
         width: 2
     };
-    socket.on('getCounter',function(data){
+    socket.on('counterConx',function(data){
         counter = data;
         print(counter);
         if(p1 === undefined){
@@ -52,11 +52,11 @@ function setup(){
     });
 
 
-    socket.on('heartbeat',function(data){
+    socket.on('playerList',function(data){
         players = data;
     });
 
-    socket.on('heartbeatBall',function(data){
+    socket.on('ball',function(data){
         if(data !== null){
             b.x = data.x,
                 b.y = data.y,
@@ -66,21 +66,28 @@ function setup(){
         }
     });
 
+    /* socket.on('wi', function (data) {
+       w = data;
+   });*/
+
 }
 function drawNet() {
 
     for (let i = 0; i <= height; i += 15) {
+        fill("5F9EA0");
         rect(net.x, net.y + i, net.width, net.height);
     }
 
 }
 function draw(){
     background(0);
-   // rect(width/2,0,10,600);
     drawNet();
+
     textSize(40);
-    if(go === false)
+    if(go === false){
         text("Waiting for other player.", width/2 - 200, height/2);
+    }
+
     fill("5F9EA0");
     if(go === true){
         for(var i = 0; i < players.length; i++){
@@ -91,7 +98,7 @@ function draw(){
                 rect(players[i].x,players[i].y,players[i].w,players[i].h);
             }
         }
-        showPoints(players);
+        score(players);
         p1.show();
         p1.move();
         b.show();
@@ -101,12 +108,12 @@ function draw(){
         if(b.collision(p1) && p1.x === width)
             b.xv = -4;
         if(b.x < 0){
-            throwBall();
+            reinit();
             if(p1.x === width)
                 p1.points++;
         }
         if(b.x > width){
-            throwBall();
+            reinit();
             if(p1.x === 0)
                 p1.points++;
         }
@@ -119,7 +126,7 @@ function draw(){
             points:p1.points
         };
 
-        socket.emit('update',data);
+        socket.emit('playerUpdate',data);
 
         var data = {
             x:b.x,
@@ -128,15 +135,35 @@ function draw(){
             yv:b.yv,
             r:b.r
         };
-        socket.emit('updateBall',data);
+        socket.emit('ballUpdate',data);
     }}
 
-function throwBall(){
+function reinit(){
     b.x = width / 2;
     b.y = height /2;
+    //showWinner();
 }
+/*function showWinner() {
+    //  calcWinner();
+    background(0);
+    textSize(50);
+    fill("#5F9EA0");
 
-function showPoints(p){
+
+    if (w !== null) {
+
+        if (w.g !== undefined && w.g === "you win") {
+            if (socket.id === w.id) {
+                console.log("okk");
+                text("you win", width / 2 - 100, height / 2);
+
+            } else {
+                text("you lose", width / 2 - 100, height / 2);
+            }
+        }
+    }
+}*/
+function score(p){
     textSize(50);
     fill("5F9EA0");
     for(var i = 0; i < p.length; i++){
